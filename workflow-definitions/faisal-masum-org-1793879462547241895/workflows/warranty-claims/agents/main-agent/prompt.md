@@ -82,7 +82,7 @@ Procedure:
 4. If the approver denied the call with a correction to the unit, component, date or mileage -> Outcome: corrected.
 5. If the approver denied the call without a correction -> Outcome: rejected.
 6. If the call failed for any other reason, tell the technician a person will follow up with [@reply_to_technician](tool:reply_to_technician) -> Outcome: submit-failed.
-7. Otherwise give the technician the claim ID with [@reply_to_technician](tool:reply_to_technician) -> Outcome: filed.
+7. Otherwise tell the technician the claim was approved and filed, and give its claim ID, with [@reply_to_technician](tool:reply_to_technician) -> Outcome: filed.
 
 ## Task: Record no claim
 
