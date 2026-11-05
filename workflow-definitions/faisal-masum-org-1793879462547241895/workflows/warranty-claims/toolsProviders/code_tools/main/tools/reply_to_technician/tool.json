@@ -1,0 +1,8 @@
+{
+  "description": "Posts a message to the technician in the Slack thread that started this run. Each call posts a new message.",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "message": { "type": "string", "description": "The message text." } },
+    "required": ["message"]
+  }
+}

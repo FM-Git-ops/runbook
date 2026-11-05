@@ -1,0 +1,9 @@
+{
+  "name": "Google Sheets",
+  "providerId": "google-sheets",
+  "actions": [
+    { "actionId": "get-rows", "enabled": true },
+    { "actionId": "append-row", "enabled": true }
+  ],
+  "subscriptions": []
+}

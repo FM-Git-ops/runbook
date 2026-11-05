@@ -1,0 +1,13 @@
+{
+  "description": "Reads the unit, warranty terms and existing claims from the warranty sheet and decides whether a failure is covered. Read-only and safe to repeat. Returns status covered, not_covered, duplicate, unit_not_found, no_matching_terms or invalid_input, with a reason and the coverage figures.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "unitNumber": { "type": "string", "description": "The unit number as the technician gave it, such as T-1001." },
+      "component": { "type": "string", "enum": ["Engine", "Transmission", "Aftertreatment"], "description": "The failed component group." },
+      "failureDate": { "type": "string", "description": "The failure date as YYYY-MM-DD." },
+      "mileage": { "type": "number", "description": "The odometer reading in miles at failure." }
+    },
+    "required": ["unitNumber", "component", "failureDate", "mileage"]
+  }
+}

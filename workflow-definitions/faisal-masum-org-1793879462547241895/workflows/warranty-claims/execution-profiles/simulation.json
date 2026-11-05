@@ -1,0 +1,9 @@
+{
+  "codeTools": { "default": "execute", "overrides": { "submit_claim": "simulated" } },
+  "connections": {
+    "slack": { "connectionId": "01a1ab8d-9c0e-711c-bc2f-160d1d01e9f2", "actions": { "default": "simulated", "overrides": {} } },
+    "sheets": { "connectionId": "01a1ac59-4b1a-7116-851f-99cf4c5cbbfe", "actions": { "default": "simulated", "overrides": { "get-rows": "execute" } } }
+  },
+  "browserProviders": { "default": "execute", "overrides": {} },
+  "delegations": { "default": "execute", "overrides": {} }
+}

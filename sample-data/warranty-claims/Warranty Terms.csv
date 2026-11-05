@@ -1,0 +1,16 @@
+Make,Model,Year From,Year To,Component,Months,Miles
+Freightliner,Cascadia,2021,2023,Engine,60,500000
+Freightliner,Cascadia,2021,2023,Transmission,48,400000
+Freightliner,Cascadia,2021,2023,Aftertreatment,24,250000
+Freightliner,Cascadia,2024,2026,Engine,60,600000
+Freightliner,Cascadia,2024,2026,Transmission,48,400000
+Freightliner,Cascadia,2024,2026,Aftertreatment,36,300000
+Kenworth,T680,2022,2026,Engine,60,500000
+Kenworth,T680,2022,2026,Transmission,48,400000
+Kenworth,T680,2022,2026,Aftertreatment,24,250000
+Peterbilt,579,2021,2026,Engine,48,450000
+Peterbilt,579,2021,2026,Transmission,48,350000
+Peterbilt,579,2021,2026,Aftertreatment,24,250000
+Volvo,VNL,2023,2026,Engine,60,500000
+Volvo,VNL,2023,2026,Transmission,36,350000
+Volvo,VNL,2023,2026,Aftertreatment,24,200000

@@ -1,0 +1,13 @@
+{
+  "defaultExecutionProfiles": {
+    "simulation": "simulation",
+    "production": "production"
+  },
+  "manualRunDefaults": {
+    "agentConfigId": "main-agent"
+  },
+  "notificationChannels": {
+    "reviewQueueNotifications": { "provider": "slack", "connectionConfigId": "slack", "channelId": "D0CF3MHLC0N" },
+    "runtimeErrors": { "provider": "slack", "connectionConfigId": "slack", "channelId": "D0CF3MHLC0N" }
+  }
+}

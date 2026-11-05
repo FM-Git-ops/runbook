@@ -1,0 +1,6 @@
+{
+  "name": "Slack",
+  "providerId": "slack",
+  "actions": [{ "actionId": "send-message", "enabled": true }],
+  "subscriptions": [{ "eventTypeId": "message", "eventTypeConfig": { "channelId": "D0CF3MHLC0N" } }]
+}

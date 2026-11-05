@@ -1,0 +1,14 @@
+{
+  "description": "Adds a row to the Claims tab for a claim that was not filed, so every decision has a record. Writes one row per run. A repeat call writes nothing. Refuses when a claim was already filed in this run.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "status": { "type": "string", "enum": ["Not covered", "Duplicate", "Rejected", "Needs review"], "description": "Why no claim was filed." },
+      "reason": { "type": "string", "description": "The reason in one sentence. Use the reason from check_claim unchanged when there is one." },
+      "unitNumber": { "type": "string", "description": "The unit number, or an empty string when the technician never gave one." },
+      "component": { "type": "string", "description": "The component group, or an empty string when unknown." },
+      "failureDescription": { "type": "string", "description": "A short description of the reported failure." }
+    },
+    "required": ["status", "reason", "unitNumber", "component", "failureDescription"]
+  }
+}
