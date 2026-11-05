@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "tenantName": "Faisal Masum Org",
+  "environment": {
+    "slug": "faisal-masum-org-1793879462547241895",
+    "apiUrl": "https://api-interview.myrunbook.com",
+    "appUrl": "https://interview.myrunbook.com",
+    "organizationId": "org_3Lgd5fS1DREd1UxCCPz6jbFXLhn"
+  }
+}
