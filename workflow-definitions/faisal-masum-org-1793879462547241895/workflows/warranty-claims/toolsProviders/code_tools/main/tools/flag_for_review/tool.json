@@ -1,0 +1,8 @@
+{
+  "description": "Posts a Needs review notice at the top of the Slack channel, with a link to this claim's thread. Each call posts a new message.",
+  "inputSchema": {
+    "type": "object",
+    "properties": { "note": { "type": "string", "description": "What a person needs to review, in one sentence, including the claim ID." } },
+    "required": ["note"]
+  }
+}

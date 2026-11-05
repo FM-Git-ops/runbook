@@ -7,7 +7,8 @@ const TRIGGER_PHRASE = /rb-claim-agent/i;
 
 export default (async (ctx) => {
   const payload = ctx.event.payload as Record<string, unknown>;
-  if (payload.bot_id || payload.subtype) return null;
+  // A message with a photo has the file_share subtype. Its text still counts as repair notes.
+  if (payload.bot_id || (payload.subtype && payload.subtype !== "file_share")) return null;
 
   const channel = String(payload.channel ?? "");
   const ts = String(payload.ts ?? "");

@@ -82,7 +82,7 @@ Rules:
 
 Procedure:
 1. Write the failure description and repair performed.
-2. Call [@request_approval](tool:request_approval) with the claim's facts, so the request appears in the thread.
+2. Call [@request_approval](tool:request_approval) with the claim's facts, so the approver is emailed and the thread is told.
 3. Call [@submit_claim](tool:submit_claim) with the same facts.
 4. If the approver denied the call with a correction to the wording, labor hours or parts cost, apply it, then call [@request_approval](tool:request_approval) and [@submit_claim](tool:submit_claim) again.
 5. If the approver denied the call with a correction to the unit, component, date or mileage -> Outcome: corrected.
@@ -107,3 +107,25 @@ Procedure:
 1. Call [@log_decision](tool:log_decision) with the status, the reason, and the facts known so far.
 2. If the call failed, tell the technician a person will follow up with [@reply_to_technician](tool:reply_to_technician) -> Outcome: record-failed.
 3. Otherwise tell the technician no claim was filed and why with [@reply_to_technician](tool:reply_to_technician) -> Outcome: recorded.
+
+## Task: Handle a closed claim
+
+Id: handle-closed-claim
+
+Trigger: the technician has sent a message after this claim was filed or recorded as not filed.
+
+Goal: keep the decision as it stands and tell the technician how to go further.
+
+Outcomes:
+- [acknowledged] The message needs no action -> End: the decision stands
+- [new-post-advised] The technician is told to start a new post -> End: the decision stands and no further automated changes are made
+- [flagged] A person is asked to review a filed claim -> End: the filed claim stands and a person is asked to review it
+
+Rules:
+- Never re-check, refile or change a decision in this run, because each run holds one decision and a second one could contradict the record.
+
+Procedure:
+1. If the message only acknowledges the decision, such as thanks, send nothing -> Outcome: acknowledged.
+2. If no claim was filed and the technician disputes or changes a fact, tell them this decision is closed and to start a new post with the corrected details and the rb-claim-agent phrase, using [@reply_to_technician](tool:reply_to_technician) -> Outcome: new-post-advised.
+3. If a claim was filed and the technician wants it changed or cancelled, call [@flag_for_review](tool:flag_for_review) with the claim ID and what they asked, then tell them the filed claim can't be changed here and a person has been asked to review it, using [@reply_to_technician](tool:reply_to_technician) -> Outcome: flagged.
+4. Otherwise repeat the decision with [@reply_to_technician](tool:reply_to_technician) -> Outcome: acknowledged.

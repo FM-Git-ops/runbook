@@ -46,6 +46,22 @@ export function findTab(tabs: Tab[], name: string): Tab {
   return tab;
 }
 
+// Slack formatting, mentions and links in claim text must not reach Slack as live content.
+export const plain = (value: string): string => value.replace(/[<>*_`~|]/g, " ").replace(/https?:\/\/\S+/gi, "[link removed]").trim();
+
+// Posts at the top of the channel, so a person owns the review instead of it sitting in a thread.
+export async function postForReview(ctx: Ctx, thread: Thread, note: string): Promise<void> {
+  const opened = await ctx.store.get<{ permalink?: string }>("opened");
+  const lines = [`**Needs review:** ${plain(note)}`];
+  if (opened?.permalink) lines.push(`Thread: ${opened.permalink}`);
+  const message = lines.join("\n");
+  await ctx.executeIntegration<{ ok: boolean; ts: string }>({
+    connectionConfigId: "slack",
+    actionId: "send-message",
+    params: { channel: thread.channel, text: message, markdownText: message },
+  });
+}
+
 // The channel and thread come from the Slack event, so the model never copies them.
 export async function getThread(ctx: Ctx): Promise<Thread> {
   const saved = await ctx.store.get<Thread>("thread");

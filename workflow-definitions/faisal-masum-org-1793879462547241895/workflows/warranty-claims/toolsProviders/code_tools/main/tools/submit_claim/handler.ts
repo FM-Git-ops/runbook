@@ -9,6 +9,7 @@ type Input = {
 export default (async ({ input, ctx }) => {
   const filed = await ctx.store.get<{ claimId: string }>("filed");
   if (filed) return { status: "submitted", claimId: filed.claimId };
+  if (await ctx.store.get<unknown>("logged")) throw new Error("This claim already has a final decision.");
 
   const check = await ctx.store.get<CheckResult>("check");
   const matches = check?.status === "covered" && check.unitNumber === input.unitNumber.trim().toUpperCase() &&

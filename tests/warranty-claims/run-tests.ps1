@@ -55,7 +55,7 @@ function Invoke-Case($case, [int]$attempt) {
   $slackFile = Save-Json 'slack.json' @{ ok = $true; channel = $channel; ts = '1793999999.000200' }
   $rowFile = Save-Json 'row.json' @{ rowIndex = 2 }
 
-  $r = @{ replies = @(); logs = @(); submits = @(); approved = 0; denied = 0; errors = @(); runUrl = '' }
+  $r = @{ replies = @(); emails = @(); logs = @(); submits = @(); approved = 0; denied = 0; errors = @(); runUrl = '' }
   $approvals = [Collections.ArrayList]@()
   if (Get-Prop $case 'approvals') { foreach ($a in $case.approvals) { [void]$approvals.Add($a) } }
   $replies = [Collections.ArrayList]@()
@@ -102,6 +102,10 @@ function Invoke-Case($case, [int]$attempt) {
     } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'send-message') {
       $r.replies += [string]$call.params.text
       $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$slackFile", '--timeout', "$TimeoutSeconds")
+    } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'send-email') {
+      $r.emails += $call.params
+      $mailFile = Save-Json 'mail.json' @{ messageId = 'sim-message'; threadId = 'sim-thread' }
+      $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$mailFile", '--timeout', "$TimeoutSeconds")
     } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'get-permalink') {
       $r.opened = $true
       $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$linkFile", '--timeout', "$TimeoutSeconds")
@@ -143,7 +147,13 @@ function Test-Case($case, $r) {
   if ($replyMatch -and $replyText -notmatch $replyMatch) { $failures += "no reply matching '$replyMatch'" }
   if ($r.replies.Count -eq 0) { $failures += 'the technician got no reply' }
   if (-not (Get-Prop $case 'agent') -and -not $r.opened) { $failures += 'open_claim was not called, so the thread is not registered' }
-  if ($r.approved + $r.denied -gt 0 -and $replyText -notmatch 'Approval needed') { $failures += 'no approval request was posted in the thread' }
+  $attempts = $r.approved + $r.denied
+  if ($r.emails.Count -ne $attempts) { $failures += "sent $($r.emails.Count) approval email(s) for $attempts approval request(s)" }
+  foreach ($mail in $r.emails) {
+    if ($mail.to -ne 'fmasum.fm@gmail.com') { $failures += "approval email went to '$($mail.to)'" }
+    if ($mail.body -notmatch 'not verified') { $failures += 'approval email is missing the not-verified line' }
+  }
+  if ($attempts -gt 0 -and $replyText -notmatch 'Sent for approval') { $failures += 'the thread was not told the claim went for approval' }
   # The agent must not invent a contact or next step. "A person will follow up" is the only one the prompt allows.
   if ($replyText -match 'administrator|contact |reach out|your manager|supervisor|service advisor') { $failures += "reply invents a next step: $replyText" }
 

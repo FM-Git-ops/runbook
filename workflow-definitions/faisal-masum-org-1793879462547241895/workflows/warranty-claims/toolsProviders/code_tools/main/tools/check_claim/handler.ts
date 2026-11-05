@@ -30,6 +30,8 @@ const isoDate = (date: Date): string => date.toISOString().slice(0, 10);
 const same = (a: string, b: string): boolean => a.trim().toLowerCase() === b.trim().toLowerCase();
 
 export default (async ({ input, ctx }) => {
+  if ((await ctx.store.get<unknown>("filed")) || (await ctx.store.get<unknown>("logged"))) throw new Error("This claim already has a final decision.");
+
   const base = { unitNumber: input.unitNumber.trim().toUpperCase(), component: input.component, failureDate: input.failureDate.trim(), mileage: input.mileage };
   const finish = async (result: CheckResult) => {
     await ctx.store.set("check", result);
@@ -50,18 +52,26 @@ export default (async ({ input, ctx }) => {
   const modelYear = Number(cell(unit, "Model Year"));
   const inServiceDate = cell(unit, "In-Service Date");
   const inService = parseDate(inServiceDate);
-  if (!inService || !Number.isInteger(modelYear)) throw new Error(`Unit ${base.unitNumber} has an invalid model year or in-service date in the sheet.`);
+  if (!inService || !Number.isInteger(modelYear) || modelYear <= 0) throw new Error(`Unit ${base.unitNumber} has an invalid model year or in-service date in the sheet.`);
   const vehicle = { ...base, make, model, modelYear, inServiceDate };
 
   if (failure < inService) return finish({ ...vehicle, status: "invalid_input", reason: `The failure date is before the unit's in-service date of ${inServiceDate}.` });
 
-  const terms = findTab(tabs, "Warranty Terms").rows.find((row) =>
-    same(cell(row, "Make"), make) && same(cell(row, "Model"), model) && same(cell(row, "Component"), input.component) &&
-    Number(cell(row, "Year From")) <= modelYear && modelYear <= Number(cell(row, "Year To")));
+  // A blank or bad cell must stop the check. Read as 0, it would deny a valid claim.
+  const positive = (row: Parameters<typeof cell>[0], column: string): number => {
+    const value = Number(cell(row, column));
+    if (!cell(row, column) || !Number.isFinite(value) || value <= 0) {
+      throw new Error(`The Warranty Terms row for ${make} ${model} ${input.component} has a blank or invalid ${column}.`);
+    }
+    return value;
+  };
+  const candidates = findTab(tabs, "Warranty Terms").rows.filter((row) =>
+    same(cell(row, "Make"), make) && same(cell(row, "Model"), model) && same(cell(row, "Component"), input.component));
+  const terms = candidates.find((row) => positive(row, "Year From") <= modelYear && modelYear <= positive(row, "Year To"));
   if (!terms) return finish({ ...vehicle, status: "no_matching_terms", reason: `There are no ${input.component} warranty terms for a ${modelYear} ${make} ${model}.` });
 
-  const coverageMonths = Number(cell(terms, "Months"));
-  const coverageMiles = Number(cell(terms, "Miles"));
+  const coverageMonths = positive(terms, "Months");
+  const coverageMiles = positive(terms, "Miles");
   const coverageEnd = addMonths(inService, coverageMonths);
   const coverage = { ...vehicle, coverageMonths, coverageMiles, coverageEndDate: isoDate(coverageEnd), monthsInService: wholeMonthsBetween(inService, failure) };
 

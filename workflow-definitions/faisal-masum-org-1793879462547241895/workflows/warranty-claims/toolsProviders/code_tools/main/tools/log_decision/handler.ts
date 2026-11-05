@@ -1,5 +1,5 @@
 import type { ToolHandlerFn } from "@/types";
-import { SHEET_URL, findTab, getThread, readTabs, safeCell, type CheckResult } from "../../lib/shared.ts";
+import { SHEET_URL, findTab, getThread, postForReview, readTabs, safeCell, type CheckResult } from "../../lib/shared.ts";
 
 type Input = { status: string; reason: string; unitNumber: string; component: string; failureDescription: string };
 
@@ -61,6 +61,10 @@ export default (async ({ input, ctx }) => {
       },
     },
   });
+
+  if (input.status === "Needs review") {
+    await postForReview(ctx, thread, `${input.unitNumber || "Unknown unit"}: ${reason}`);
+  }
 
   await ctx.store.set("logged", pending);
   await ctx.setOutcome("disqualified", { note: `${input.status}: ${reason}`.slice(0, 200) });

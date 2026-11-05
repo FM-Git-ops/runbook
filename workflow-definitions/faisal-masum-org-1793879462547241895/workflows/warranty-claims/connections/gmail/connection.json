@@ -1,0 +1,6 @@
+{
+  "name": "Gmail",
+  "providerId": "gmail",
+  "actions": [{ "actionId": "send-email", "enabled": true }],
+  "subscriptions": []
+}

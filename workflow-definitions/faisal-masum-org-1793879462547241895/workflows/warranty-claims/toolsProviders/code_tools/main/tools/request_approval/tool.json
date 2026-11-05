@@ -1,5 +1,5 @@
 {
-  "description": "Posts the claim's approval request in the Slack thread, in a fixed format. Refuses unless the latest check_claim result for the same unit, component, failure date and mileage was covered. Each call posts a new message.",
+  "description": "Emails the claim's approval request to the approver in a fixed format, and posts a short note in the Slack thread. Refuses unless the latest check_claim result for the same unit, component, failure date and mileage was covered. Each call sends a new email and note.",
   "inputSchema": {
     "type": "object",
     "properties": {
