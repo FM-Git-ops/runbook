@@ -2,5 +2,5 @@
   "name": "Slack",
   "providerId": "slack",
   "actions": [{ "actionId": "send-message", "enabled": true }],
-  "subscriptions": [{ "eventTypeId": "message", "eventTypeConfig": { "channelId": "D0CF3MHLC0N" } }]
+  "subscriptions": [{ "eventTypeId": "message", "eventTypeConfig": { "channelId": "C0CF7H58J3T" } }]
 }

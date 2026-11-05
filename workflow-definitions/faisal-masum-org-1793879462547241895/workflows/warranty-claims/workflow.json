@@ -7,7 +7,7 @@
     "agentConfigId": "main-agent"
   },
   "notificationChannels": {
-    "reviewQueueNotifications": { "provider": "slack", "connectionConfigId": "slack", "channelId": "D0CF3MHLC0N" },
-    "runtimeErrors": { "provider": "slack", "connectionConfigId": "slack", "channelId": "D0CF3MHLC0N" }
+    "reviewQueueNotifications": { "provider": "slack", "connectionConfigId": "slack", "channelId": "C0CF7H58J3T" },
+    "runtimeErrors": { "provider": "slack", "connectionConfigId": "slack", "channelId": "C0CF7H58J3T" }
   }
 }
