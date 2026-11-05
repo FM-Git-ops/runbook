@@ -6,8 +6,9 @@
       "unitNumber": { "type": "string", "description": "The unit number as the technician gave it, such as T-1001." },
       "component": { "type": "string", "enum": ["Engine", "Transmission", "Aftertreatment"], "description": "The failed component group." },
       "failureDate": { "type": "string", "description": "The failure date as YYYY-MM-DD." },
-      "mileage": { "type": "number", "description": "The odometer reading in miles at failure." }
+      "mileage": { "type": "number", "description": "The odometer reading in miles at failure." },
+      "partsCost": { "type": "number", "description": "The parts cost in US dollars." }
     },
-    "required": ["unitNumber", "component", "failureDate", "mileage"]
+    "required": ["unitNumber", "component", "failureDate", "mileage", "partsCost"]
   }
 }

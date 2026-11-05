@@ -1,7 +1,7 @@
 import type { ToolHandlerFn } from "@/types";
-import { cell, findTab, readTabs, type CheckResult } from "../../lib/shared.ts";
+import { cell, costWarning, findTab, readTabs, type CheckResult } from "../../lib/shared.ts";
 
-type Input = { unitNumber: string; component: string; failureDate: string; mileage: number };
+type Input = { unitNumber: string; component: string; failureDate: string; mileage: number; partsCost: number };
 
 const DUPLICATE_WINDOW_DAYS = 30;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -31,6 +31,9 @@ const same = (a: string, b: string): boolean => a.trim().toLowerCase() === b.tri
 
 export default (async ({ input, ctx }) => {
   if ((await ctx.store.get<unknown>("filed")) || (await ctx.store.get<unknown>("logged"))) throw new Error("This claim already has a final decision.");
+
+  // Stored here because the approval screen is built as soon as submit_claim is called.
+  await ctx.store.set("costWarning", { text: costWarning(input.partsCost).text });
 
   const base = { unitNumber: input.unitNumber.trim().toUpperCase(), component: input.component, failureDate: input.failureDate.trim(), mileage: input.mileage };
   const finish = async (result: CheckResult) => {

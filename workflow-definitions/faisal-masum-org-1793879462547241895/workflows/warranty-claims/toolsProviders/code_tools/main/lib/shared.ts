@@ -46,6 +46,14 @@ export function findTab(tabs: Tab[], name: string): Tab {
   return tab;
 }
 
+const COST_WARNING_ABOVE_USD = 99000;
+
+// A warning only: the approver still decides. The approval screen reads the stored value.
+export function costWarning(partsCost: number): { high: boolean; text: string } {
+  const high = partsCost > COST_WARNING_ABOVE_USD;
+  return { high, text: high ? `Parts cost of $${partsCost} is above the $${COST_WARNING_ABOVE_USD} warning limit. Review it closely.` : "None" };
+}
+
 // Slack formatting, mentions and links in claim text must not reach Slack as live content.
 export const plain = (value: string): string => value.replace(/[<>*_`~|]/g, " ").replace(/https?:\/\/\S+/gi, "[link removed]").trim();
 

@@ -58,7 +58,7 @@ Rules:
 - None beyond the Global Policies and [@check_claim](tool:check_claim)'s contract.
 
 Procedure:
-1. Call [@check_claim](tool:check_claim) with the unit number, component group, failure date and mileage.
+1. Call [@check_claim](tool:check_claim) with the unit number, component group, failure date, mileage and parts cost.
 2. If the status is unit_not_found or invalid_input and the technician has not already confirmed these facts after being asked, quote the reason and ask them to confirm with [@reply_to_technician](tool:reply_to_technician) -> Outcome: fix-needed.
 3. If the status is covered -> Outcome: covered.
 4. Otherwise -> Outcome: no-claim.
@@ -83,8 +83,8 @@ Rules:
 Procedure:
 1. Write the failure description and repair performed.
 2. Call [@request_approval](tool:request_approval) with the claim's facts, so the approver is emailed and the thread is told.
-3. Call [@submit_claim](tool:submit_claim) with the same facts.
-4. If the approver denied the call with a correction to the wording, labor hours or parts cost, apply it, then call [@request_approval](tool:request_approval) and [@submit_claim](tool:submit_claim) again.
+3. Once that call has returned, call [@submit_claim](tool:submit_claim) with the same facts. Never make these two calls together, because the approval screen needs the first one's result.
+4. If the approver denied the call with a correction to the wording, labor hours or parts cost, apply it, then call [@request_approval](tool:request_approval), wait for it to return, and call [@submit_claim](tool:submit_claim) again.
 5. If the approver denied the call with a correction to the unit, component, date or mileage -> Outcome: corrected.
 6. If the approver denied the call without a correction -> Outcome: rejected.
 7. If either call failed for any other reason, tell the technician a person will follow up with [@reply_to_technician](tool:reply_to_technician) -> Outcome: submit-failed.

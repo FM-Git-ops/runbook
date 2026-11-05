@@ -86,6 +86,9 @@ function Invoke-Case($case, [int]$attempt) {
 
     $call = $pending[0]
     $id = $call.toolCallId
+    # submit_claim must wait for request_approval, or the approval screen is built too early.
+    $submitPending = @($pending | Where-Object { $_.toolName -eq 'submit_claim' }).Count -gt 0
+    if ($submitPending -and ($pending.Count -gt 1 -or $r.emails.Count -le ($r.approved + $r.denied))) { $r.errors += 'submit_claim was called before request_approval finished' }
     if ($call.kind -eq 'tool_call' -and $call.toolName -eq 'submit_claim') {
       $r.submits += $call.input
       $decision = $null

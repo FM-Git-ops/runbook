@@ -1,5 +1,5 @@
 import type { ToolHandlerFn } from "@/types";
-import { getThread, plain, type CheckResult } from "../../lib/shared.ts";
+import { costWarning, getThread, plain, type CheckResult } from "../../lib/shared.ts";
 
 type Input = {
   unitNumber: string; component: string; failureDate: string; mileage: number;
@@ -7,7 +7,6 @@ type Input = {
 };
 
 const APPROVER_EMAIL = "fmasum.fm@gmail.com";
-const COST_WARNING_ABOVE_USD = 99000;
 const RUNS_URL = "https://interview.myrunbook.com/org/faisal-masum-org-1793879462547241895/workflows/01a1ac6d-48bb-728f-8730-55973b7b17cf/runs";
 
 const html = (value: string): string => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -18,9 +17,8 @@ export default (async ({ input, ctx }) => {
     check.component === input.component && check.failureDate === input.failureDate.trim() && check.mileage === input.mileage;
   if (!check || !matches) throw new Error("This claim has no matching covered result from check_claim.");
 
-  // A warning only: the approver still decides. The approval screen reads this value too.
-  const highCost = input.partsCost > COST_WARNING_ABOVE_USD;
-  const warning = highCost ? `Parts cost of $${input.partsCost} is above the $${COST_WARNING_ABOVE_USD} warning limit. Review it closely.` : "None";
+  // check_claim stored this first. This refreshes it when an approver corrected the cost.
+  const { high: highCost, text: warning } = costWarning(input.partsCost);
   await ctx.store.set("costWarning", { text: warning });
 
   const thread = await getThread(ctx);
