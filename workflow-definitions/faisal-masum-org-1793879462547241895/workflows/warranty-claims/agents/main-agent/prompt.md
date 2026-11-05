@@ -36,11 +36,12 @@ Rules:
 - Ask for all missing facts in one message, because each round trip delays the technician.
 
 Procedure:
-1. Read every message from the technician in this run and list the required facts they have stated.
-2. If the message has nothing to do with a truck repair, tell the technician to post repair notes here with [@reply_to_technician](tool:reply_to_technician) -> Outcome: not-a-claim.
-3. If the technician says they can't provide a required fact, or the failure is outside the three component groups -> Outcome: details-unavailable.
-4. If any required fact is missing or unclear, ask for all of them with [@reply_to_technician](tool:reply_to_technician) -> Outcome: waiting-for-technician.
-5. Otherwise -> Outcome: details-complete.
+1. Call [@open_claim](tool:open_claim), and carry on if it fails.
+2. Read every message from the technician in this run and list the required facts they have stated.
+3. If the message has nothing to do with a truck repair, tell the technician to post repair notes here with [@reply_to_technician](tool:reply_to_technician) -> Outcome: not-a-claim.
+4. If the technician says they can't provide a required fact, or the failure is outside the three component groups -> Outcome: details-unavailable.
+5. If any required fact is missing or unclear, ask for all of them with [@reply_to_technician](tool:reply_to_technician) -> Outcome: waiting-for-technician.
+6. Otherwise -> Outcome: details-complete.
 
 ## Task: Assess coverage
 
@@ -81,12 +82,13 @@ Rules:
 
 Procedure:
 1. Write the failure description and repair performed.
-2. Call [@submit_claim](tool:submit_claim) with the claim's facts.
-3. If the approver denied the call with a correction to the wording, labor hours or parts cost, apply it and call [@submit_claim](tool:submit_claim) again.
-4. If the approver denied the call with a correction to the unit, component, date or mileage -> Outcome: corrected.
-5. If the approver denied the call without a correction -> Outcome: rejected.
-6. If the call failed for any other reason, tell the technician a person will follow up with [@reply_to_technician](tool:reply_to_technician) -> Outcome: submit-failed.
-7. Otherwise tell the technician the claim was approved and filed, and give its claim ID, with [@reply_to_technician](tool:reply_to_technician) -> Outcome: filed.
+2. Call [@request_approval](tool:request_approval) with the claim's facts, so the request appears in the thread.
+3. Call [@submit_claim](tool:submit_claim) with the same facts.
+4. If the approver denied the call with a correction to the wording, labor hours or parts cost, apply it, then call [@request_approval](tool:request_approval) and [@submit_claim](tool:submit_claim) again.
+5. If the approver denied the call with a correction to the unit, component, date or mileage -> Outcome: corrected.
+6. If the approver denied the call without a correction -> Outcome: rejected.
+7. If either call failed for any other reason, tell the technician a person will follow up with [@reply_to_technician](tool:reply_to_technician) -> Outcome: submit-failed.
+8. Otherwise tell the technician the claim was approved and filed, and give its claim ID, with [@reply_to_technician](tool:reply_to_technician) -> Outcome: filed.
 
 ## Task: Record no claim
 

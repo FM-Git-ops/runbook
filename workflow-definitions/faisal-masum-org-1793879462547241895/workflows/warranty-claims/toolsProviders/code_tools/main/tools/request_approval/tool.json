@@ -1,0 +1,17 @@
+{
+  "description": "Posts the claim's approval request in the Slack thread, in a fixed format. Refuses unless the latest check_claim result for the same unit, component, failure date and mileage was covered. Each call posts a new message.",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "unitNumber": { "type": "string", "description": "The unit number from the check_claim result." },
+      "component": { "type": "string", "enum": ["Engine", "Transmission", "Aftertreatment"], "description": "The failed component group." },
+      "failureDate": { "type": "string", "description": "The failure date as YYYY-MM-DD." },
+      "mileage": { "type": "number", "description": "The odometer reading in miles at failure." },
+      "failureDescription": { "type": "string", "description": "The standardized failure description." },
+      "repairPerformed": { "type": "string", "description": "The standardized description of the repair." },
+      "laborHours": { "type": "number", "description": "The labor hours on the repair." },
+      "partsCost": { "type": "number", "description": "The parts cost in US dollars." }
+    },
+    "required": ["unitNumber", "component", "failureDate", "mileage", "failureDescription", "repairPerformed", "laborHours", "partsCost"]
+  }
+}

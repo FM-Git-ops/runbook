@@ -50,6 +50,7 @@ function Invoke-Case($case, [int]$attempt) {
   $ts = "1793{0}.000100" -f $seq
   $channel = 'C0CF7H58J3T'
   $event = @{ channel = $channel; user = 'U0SIM00001'; ts = $ts; userName = 'Test Technician'; text = $case.text }
+  if (Get-Prop $case 'agent') { $event.user = 'U0SIM00002'; $event.userName = 'Someone Else'; $event.threadTs = '1793000000.000100' }
   $inputFile = Save-Json "input-$seq.json" $event
   $slackFile = Save-Json 'slack.json' @{ ok = $true; channel = $channel; ts = '1793999999.000200' }
   $rowFile = Save-Json 'row.json' @{ rowIndex = 2 }
@@ -60,7 +61,10 @@ function Invoke-Case($case, [int]$attempt) {
   $replies = [Collections.ArrayList]@()
   if (Get-Prop $case 'replies') { foreach ($m in $case.replies) { [void]$replies.Add($m) } }
 
-  $state = Invoke-Rb @('run', 'start', 'warranty-claims', '--agent', 'main-agent', '--input', "@$inputFile", '--branch', $Branch, '--timeout', "$TimeoutSeconds")
+  $agent = Get-Prop $case 'agent'
+  if (-not $agent) { $agent = 'main-agent' }
+  $linkFile = Save-Json 'permalink.json' @{ ok = $true; permalink = "https://example.slack.com/archives/$channel/p1793000000000100" }
+  $state = Invoke-Rb @('run', 'start', 'warranty-claims', '--agent', $agent, '--input', "@$inputFile", '--branch', $Branch, '--timeout', "$TimeoutSeconds")
   if (-not $state) { $r.errors += 'rb run start returned nothing'; return $r }
   $workflowId = $state.workflowId
   $runId = $state.workflowRunId
@@ -98,6 +102,9 @@ function Invoke-Case($case, [int]$attempt) {
     } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'send-message') {
       $r.replies += [string]$call.params.text
       $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$slackFile", '--timeout', "$TimeoutSeconds")
+    } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'get-permalink') {
+      $r.opened = $true
+      $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$linkFile", '--timeout', "$TimeoutSeconds")
     } elseif ($call.kind -eq 'integration_action' -and $call.actionId -eq 'append-row') {
       $r.logs += $call.params.values
       $state = Invoke-Rb @('run', 'answer', $workflowId, $runId, '--call', $id, '--result', "@$rowFile", '--timeout', "$TimeoutSeconds")
@@ -135,6 +142,8 @@ function Test-Case($case, $r) {
   $replyMatch = Get-Prop $e 'replyMatch'
   if ($replyMatch -and $replyText -notmatch $replyMatch) { $failures += "no reply matching '$replyMatch'" }
   if ($r.replies.Count -eq 0) { $failures += 'the technician got no reply' }
+  if (-not (Get-Prop $case 'agent') -and -not $r.opened) { $failures += 'open_claim was not called, so the thread is not registered' }
+  if ($r.approved + $r.denied -gt 0 -and $replyText -notmatch 'Approval needed') { $failures += 'no approval request was posted in the thread' }
   # The agent must not invent a contact or next step. "A person will follow up" is the only one the prompt allows.
   if ($replyText -match 'administrator|contact |reach out|your manager|supervisor|service advisor') { $failures += "reply invents a next step: $replyText" }
 

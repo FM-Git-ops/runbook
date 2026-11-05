@@ -1,7 +1,7 @@
 {
   "scope": "run",
   "integrations": [
-    { "connectionConfigId": "slack", "actions": ["send-message"] },
+    { "connectionConfigId": "slack", "actions": ["send-message", "get-permalink"] },
     { "connectionConfigId": "sheets", "actions": ["get-rows", "append-row"] }
   ]
 }

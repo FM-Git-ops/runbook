@@ -1,0 +1,9 @@
+{
+  "type": "text",
+  "name": "Thread Guard",
+  "model": "anthropic:claude-haiku-5-5",
+  "promptFormat": "task@1",
+  "toolBindings": [
+    { "type": "code_tools", "toolsProviderId": "main", "toolNames": ["notify_other_poster"] }
+  ]
+}

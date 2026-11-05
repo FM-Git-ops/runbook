@@ -1,0 +1,4 @@
+{
+  "description": "Registers this Slack thread as a claim thread. Safe to repeat: a second call does nothing.",
+  "inputSchema": { "type": "object", "properties": {} }
+}

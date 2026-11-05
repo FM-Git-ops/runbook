@@ -4,6 +4,6 @@
   "model": "anthropic:claude-sonnet-4-6",
   "promptFormat": "task@1",
   "toolBindings": [
-    { "type": "code_tools", "toolsProviderId": "main", "toolNames": ["check_claim", "submit_claim", "log_decision", "reply_to_technician"] }
+    { "type": "code_tools", "toolsProviderId": "main", "toolNames": ["open_claim", "check_claim", "request_approval", "submit_claim", "log_decision", "reply_to_technician"] }
   ]
 }

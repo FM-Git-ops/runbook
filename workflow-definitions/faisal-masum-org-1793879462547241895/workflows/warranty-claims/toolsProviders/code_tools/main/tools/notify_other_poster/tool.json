@@ -1,0 +1,4 @@
+{
+  "description": "Posts a fixed notice in the Slack thread saying the claim is waiting for the person who started it. Takes no input, so the notice can't be changed.",
+  "inputSchema": { "type": "object", "properties": {} }
+}
