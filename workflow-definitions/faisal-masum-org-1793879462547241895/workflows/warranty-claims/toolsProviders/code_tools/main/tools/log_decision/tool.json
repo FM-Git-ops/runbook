@@ -1,5 +1,5 @@
 {
-  "description": "Adds a row to the Claims tab for a claim that was not filed, so every decision has a record. Writes one row per run. A repeat call writes nothing. Refuses when a claim was already filed in this run.",
+  "description": "Adds a row to the Claims tab for a claim that was not filed, so every decision has a record. Writes one row per run. A repeat call writes nothing. Refuses when a claim was already filed in this run, or when the status doesn't match the latest check_claim result.",
   "inputSchema": {
     "type": "object",
     "properties": {

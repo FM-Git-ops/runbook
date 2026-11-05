@@ -1,5 +1,5 @@
 {
-  "description": "Posts a message to the technician in the Slack thread that started this run. Each call posts a new message.",
+  "description": "Posts a message to the technician in the Slack thread that started this run. Each call posts a new message. Refuses a message that contains a link.",
   "inputSchema": {
     "type": "object",
     "properties": { "message": { "type": "string", "description": "The message text." } },

@@ -138,6 +138,21 @@ function Test-Case($case, $r) {
   # The agent must not invent a contact or next step. "A person will follow up" is the only one the prompt allows.
   if ($replyText -match 'administrator|contact |reach out|your manager|supervisor|service advisor') { $failures += "reply invents a next step: $replyText" }
 
+  $replyNotMatch = Get-Prop $e 'replyNotMatch'
+  if ($replyNotMatch -and $replyText -match $replyNotMatch) { $failures += "reply contains '$($Matches[0])'" }
+  $submitNotMatch = Get-Prop $e 'submitNotMatch'
+  if ($submitNotMatch) {
+    foreach ($s in $r.submits) {
+      if ("$($s.failureDescription) $($s.repairPerformed)" -match $submitNotMatch) { $failures += "claim text contains '$($Matches[0])'" }
+    }
+  }
+  $logNotMatch = Get-Prop $e 'logNotMatch'
+  if ($logNotMatch -and $log) {
+    foreach ($column in 'Failure Description', 'Reason') {
+      if ("$(Get-Prop $log $column)" -match $logNotMatch) { $failures += "$column would run as a formula: $(Get-Prop $log $column)" }
+    }
+  }
+
   $wantSubmit = Get-Prop $e 'submit'
   if ($wantSubmit) {
     if ($r.submits.Count -eq 0) { $failures += 'no claim reached approval' }

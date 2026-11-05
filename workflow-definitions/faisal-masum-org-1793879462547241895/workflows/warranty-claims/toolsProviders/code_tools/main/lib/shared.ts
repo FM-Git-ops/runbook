@@ -28,6 +28,9 @@ export type CheckResult = {
 
 export const cell = (row: Row, column: string): string => (row[column]?.value ?? "").trim();
 
+// Text from Slack must never run as a spreadsheet formula, so a leading formula character is escaped.
+export const safeCell = (value: string): string => (/^[\s]*[=+\-@]/.test(value) ? `'${value}` : value);
+
 export async function readTabs(ctx: Ctx): Promise<Tab[]> {
   const sheet = await ctx.executeIntegration<{ tabs: Tab[] }>({
     connectionConfigId: "sheets",

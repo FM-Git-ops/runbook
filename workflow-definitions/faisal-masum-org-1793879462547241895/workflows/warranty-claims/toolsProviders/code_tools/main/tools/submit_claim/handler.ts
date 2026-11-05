@@ -1,5 +1,5 @@
 import type { ToolHandlerFn } from "@/types";
-import { SHEET_URL, findTab, getThread, readTabs, type CheckResult } from "../../lib/shared.ts";
+import { SHEET_URL, findTab, getThread, readTabs, safeCell, type CheckResult } from "../../lib/shared.ts";
 
 type Input = {
   unitNumber: string; component: string; failureDate: string; mileage: number;
@@ -39,12 +39,12 @@ export default (async ({ input, ctx }) => {
         "Component": check.component,
         "Failure Date": check.failureDate,
         "Mileage": String(check.mileage),
-        "Failure Description": input.failureDescription,
-        "Repair Performed": input.repairPerformed,
+        "Failure Description": safeCell(input.failureDescription),
+        "Repair Performed": safeCell(input.repairPerformed),
         "Labor Hours": String(input.laborHours),
         "Parts Cost": String(input.partsCost),
         "Reason": check.reason,
-        "Technician": thread.technician,
+        "Technician": safeCell(thread.technician),
         "Logged At": new Date().toISOString(),
       },
     },
