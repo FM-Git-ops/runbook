@@ -157,6 +157,12 @@ function Test-Case($case, $r) {
   # The agent must not invent a contact or next step. "A person will follow up" is the only one the prompt allows.
   if ($replyText -match 'administrator|contact |reach out|your manager|supervisor|service advisor') { $failures += "reply invents a next step: $replyText" }
 
+  $emailText = (@($r.emails | ForEach-Object { "$($_.subject) $($_.body)" }) -join "`n")
+  $emailMatch = Get-Prop $e 'emailMatch'
+  if ($emailMatch -and $emailText -notmatch $emailMatch) { $failures += "no approval email matching '$emailMatch'" }
+  $emailNotMatch = Get-Prop $e 'emailNotMatch'
+  if ($emailNotMatch -and $emailText -match $emailNotMatch) { $failures += "approval email contains '$($Matches[0])'" }
+
   $replyNotMatch = Get-Prop $e 'replyNotMatch'
   if ($replyNotMatch -and $replyText -match $replyNotMatch) { $failures += "reply contains '$($Matches[0])'" }
   $submitNotMatch = Get-Prop $e 'submitNotMatch'

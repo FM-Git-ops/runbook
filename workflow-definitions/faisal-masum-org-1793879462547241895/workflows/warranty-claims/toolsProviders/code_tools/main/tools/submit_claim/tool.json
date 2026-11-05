@@ -1,7 +1,7 @@
 {
   "description": "Files a warranty claim by adding it to the Claims tab with status Submitted, and returns its claim ID. Refuses unless the latest check_claim result for the same unit, component, failure date and mileage was covered. A repeat call returns the same claim ID.",
   "requiresApproval": true,
-  "approvalSummaryTemplate": "**File warranty claim for unit {{toolCallInput.unitNumber}}: {{toolCallInput.component}}**\n\nFailure date: {{toolCallInput.failureDate}}. Mileage: {{toolCallInput.mileage}}.\n\nFailure: {{toolCallInput.failureDescription}}\n\nRepair: {{toolCallInput.repairPerformed}}\n\nLabor hours: {{toolCallInput.laborHours}}. Parts cost in USD: {{toolCallInput.partsCost}}.\n\nCoverage check: {{kvStore.check.reason}}\n\nThe failure and repair text comes from the technician's notes and is not verified. Only the coverage check above comes from the system.",
+  "approvalSummaryTemplate": "**File warranty claim for unit {{toolCallInput.unitNumber}}: {{toolCallInput.component}}**\n\nFailure date: {{toolCallInput.failureDate}}. Mileage: {{toolCallInput.mileage}}.\n\nFailure: {{toolCallInput.failureDescription}}\n\nRepair: {{toolCallInput.repairPerformed}}\n\nLabor hours: {{toolCallInput.laborHours}}. Parts cost in USD: {{toolCallInput.partsCost}}.\n\nCoverage check: {{kvStore.check.reason}}\n\nCost warning: {{kvStore.costWarning.text}}\n\nThe failure and repair text comes from the technician's notes and is not verified. Only the coverage check above comes from the system.",
   "inputSchema": {
     "type": "object",
     "properties": {

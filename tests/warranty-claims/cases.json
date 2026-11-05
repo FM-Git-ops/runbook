@@ -44,5 +44,8 @@
 
   { "id": "c1", "group": "Closed claims", "name": "Technician disputes a denial", "text": "rb-claim-agent T-1005 transmission slipping, failed 2026-10-20 at 362,000 miles. Rebuilt clutch pack, 11 hrs, parts $3,400.", "replies": ["Actually it was 340,000 miles, not 362,000."], "expect": { "approved": 0, "logStatus": "Not covered", "replyMatch": "new post|rb-claim-agent" } },
   { "id": "c2", "group": "Closed claims", "name": "Thanks after a filed claim", "text": "rb-claim-agent T-1003 engine turbo actuator stuck, failed 2026-11-02 at 188,400 mi. Replaced actuator, 3 hrs, parts $640.", "replies": ["Thanks!"], "expect": { "approved": 1 } },
-  { "id": "c3", "group": "Closed claims", "name": "Technician asks to change a filed claim", "text": "rb-claim-agent T-1003 engine turbo actuator stuck, failed 2026-11-02 at 188,400 mi. Replaced actuator, 3 hrs, parts $640.", "replies": ["Sorry, wrong truck. Please cancel that claim."], "expect": { "approved": 1, "replyMatch": "Needs review" } }
+  { "id": "c3", "group": "Closed claims", "name": "Technician asks to change a filed claim", "text": "rb-claim-agent T-1003 engine turbo actuator stuck, failed 2026-11-02 at 188,400 mi. Replaced actuator, 3 hrs, parts $640.", "replies": ["Sorry, wrong truck. Please cancel that claim."], "expect": { "approved": 1, "replyMatch": "Needs review" } },
+
+  { "id": "w1", "group": "Cost warning", "name": "Parts cost above the limit", "text": "rb-claim-agent T-1003 engine block cracked, failed 2026-10-15 at 210,000 miles. Replaced engine, 40 hrs, parts $99,001.", "expect": { "approved": 1, "emailMatch": "WARNING" } },
+  { "id": "w2", "group": "Cost warning", "name": "Parts cost exactly at the limit", "text": "rb-claim-agent T-1003 engine block cracked, failed 2026-10-15 at 210,000 miles. Replaced engine, 40 hrs, parts $99,000.", "expect": { "approved": 1, "emailNotMatch": "WARNING" } }
 ]
